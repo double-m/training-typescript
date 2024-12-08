@@ -1,4 +1,5 @@
 {
+  "homepage": "https://github.com/double-m/training-typescript",
   "name": "understanding-typescript-udemy-course",
   "version": "1.0.0",
   "description": "Understanding TypeScript Udemy Course",
@@ -7,7 +8,7 @@
     "start": "lite-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "double-m",
   "license": "ISC",
   "devDependencies": {
     "lite-server": "^2.6.1"
