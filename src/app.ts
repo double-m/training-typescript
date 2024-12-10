@@ -1,3 +1,34 @@
+class ProjetctList {
+  hostElement: HTMLDivElement;
+  templateElement: HTMLTemplateElement;
+  element: HTMLFormElement;
+
+  constructor(private type: 'active' | 'finished') {
+    this.hostElement = document.getElementById('app')! as HTMLDivElement;
+    this.templateElement = document.getElementById(
+      'project-list'
+    )! as HTMLTemplateElement;
+
+    const importedNode = document.importNode(
+      this.templateElement.content,
+      true
+    );
+    this.element = importedNode.firstElementChild as HTMLFormElement;
+    this.element.id = `${this.type}-projects`;
+    this.attach();
+    this.renderContent();
+  }
+
+  private attach() {
+    this.hostElement.insertAdjacentElement('beforeend', this.element);
+  }
+
+  private renderContent() {
+    this.element.querySelector('ul')!.id = `${this.type}-projects-list`;
+    this.element.querySelector('h2')!.textContent = `${this.type.toUpperCase()} PROJECTS`;
+  }
+}
+
 class ProjetctInput {
   hostElement: HTMLDivElement;
   templateElement: HTMLTemplateElement;
@@ -140,3 +171,5 @@ function Autobind(_: any, _2: any, descriptor: PropertyDescriptor) {
 // init
 
 new ProjetctInput();
+new ProjetctList('active');
+new ProjetctList('finished');
