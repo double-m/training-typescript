@@ -102,13 +102,20 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
     this.renderContent();
   }
 
+  get personDescription(): string {
+    return this.project.people === 1
+      ? '1 person'
+      : `${this.project.people} persons`;
+  }
+
   configure(): void {
     // throw new Error('Method not implemented.');
   }
 
   renderContent(): void {
     this.element.querySelector('h2')!.innerHTML = this.project.title;
-    this.element.querySelector('h3')!.innerHTML = this.project.people.toString();
+    this.element.querySelector('h3')!.innerHTML =
+      this.personDescription + ' assigned';
     this.element.querySelector('p')!.innerHTML = this.project.description;
   }
 }
