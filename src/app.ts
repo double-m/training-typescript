@@ -1,5 +1,16 @@
 // import { v4 as uuidv4 } from 'uuid';
 
+interface Draggable {
+  dragStartHandler(event: DragEvent): void;
+  dragEndHandler(event: DragEvent): void;
+}
+
+interface DragTarget {
+  dragLeaveHandler(event: DragEvent): void;
+  dragOverHandler(event: DragEvent): void;
+  dropHandler(event: DragEvent): void;
+}
+
 enum ProjectStatus {
   Active,
   Fininshed,
@@ -90,7 +101,10 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement> {
   abstract renderContent(): void;
 }
 
-class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
+class ProjectItem
+  extends Component<HTMLUListElement, HTMLLIElement>
+  implements Draggable
+{
   private project: Project;
 
   constructor(hostId: string, project: Project) {
@@ -108,8 +122,19 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
       : `${this.project.people} persons`;
   }
 
+  @Autobind
+  dragStartHandler(_: DragEvent): void {
+    // throw new Error("Method not implemented.");
+  }
+
+  @Autobind
+  dragEndHandler(_: DragEvent): void {
+    // throw new Error("Method not implemented.");
+  }
+
   configure(): void {
-    // throw new Error('Method not implemented.');
+    this.element.addEventListener('dragstart', this.dragStartHandler);
+    this.element.addEventListener('dragend', this.dragEndHandler);
   }
 
   renderContent(): void {
@@ -120,7 +145,10 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
   }
 }
 
-class ProjectList extends Component<HTMLDivElement, HTMLElement> {
+class ProjectList
+  extends Component<HTMLDivElement, HTMLElement>
+  implements DragTarget
+{
   assignedProjects: Project[];
 
   constructor(private type: 'active' | 'finished') {
@@ -131,8 +159,27 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
     this.configure();
     this.renderContent();
   }
+  
+  @Autobind
+  dragLeaveHandler(_: DragEvent): void {
+    this.element.querySelector('ul')!.classList.remove('droppable');
+  }
+  
+  @Autobind
+  dragOverHandler(_: DragEvent): void {
+    this.element.querySelector('ul')!.classList.add('droppable');
+  }
+  
+  @Autobind
+  dropHandler(_: DragEvent): void {
+    console.log('drop!');
+  }
 
   configure() {
+    this.element.addEventListener('dragleave', this.dragLeaveHandler);
+    this.element.addEventListener('dragover', this.dragOverHandler);
+    this.element.addEventListener('drop', this.dropHandler);
+
     projectState.addListener((projects: Project[]) => {
       const relevantProjects = projects.filter(
         (project) =>
@@ -298,3 +345,4 @@ function Autobind(_: any, _2: any, descriptor: PropertyDescriptor) {
 new ProjectInput();
 new ProjectList('active');
 new ProjectList('finished');
+projectState.addProject('Project 123', 'This is a default project', 3);
